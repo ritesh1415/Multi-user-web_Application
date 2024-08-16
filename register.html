@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Page</title>
+    <script>
+        function validateForm() {
+            const email = document.getElementById('email').value;
+            const firstName = document.getElementById('first-name').value;
+            const lastName = document.getElementById('last-name').value;
+            const password = document.getElementById('password').value;
+            const phone = document.getElementById('phone').value;
+
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const namePattern = /^[a-zA-Z]{2,}$/;
+            const phonePattern = /^\d{10}$/;
+
+            if (!emailPattern.test(email)) {
+                alert('Invalid email format.');
+                return false;
+            }
+            if (!namePattern.test(firstName)) {
+                alert('First name must be at least 2 alphabetic characters.');
+                return false;
+            }
+            if (!namePattern.test(lastName)) {
+                alert('Last name must be at least 2 alphabetic characters.');
+                return false;
+            }
+            if (password.length < 6) {
+                alert('Password must be at least 6 characters long.');
+                return false;
+            }
+            if (!phonePattern.test(phone)) {
+                alert('Phone number must be exactly 10 digits.');
+                return false;
+            }
+
+            // Check for unique email
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            if (users.some(user => user.email === email)) {
+                alert('Email already registered.');
+                return false;
+            }
+
+            // Save user to localStorage
+            users.push({ email, firstName, lastName, password, phone });
+            localStorage.setItem('users', JSON.stringify(users));
+
+            // Save session
+            localStorage.setItem('currentUser', email);
+
+            // Redirect to dashboard
+            window.location.href = 'dashboard.html';
+
+            return false; // Prevent form submission
+        }
+    </script>
+</head>
+<body>
+    <h1>Register</h1>
+    <form onsubmit="return validateForm()">
+        <label>Email: <input type="email" id="email" required></label><br>
+        <label>First Name: <input type="text" id="first-name" required></label><br>
+        <label>Last Name: <input type="text" id="last-name" required></label><br>
+        <label>Password: <input type="password" id="password" required></label><br>
+        <label>Phone Number: <input type="text" id="phone" required></label><br>
+        <button type="submit">Register</button>
+    </form>
+</body>
+</html>
